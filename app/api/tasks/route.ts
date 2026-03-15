@@ -1,36 +1,43 @@
 import { NextResponse } from "next/server";
 import { createTask, getTasks } from "@/controllers/taskController";
-import jwt from "jsonwebtoken";
 
-// Fungsi helper untuk cek token (biar kodenya nggak berulang)
-const getUserIdFromToken = (request: Request) => {
+const getUserId = (request: Request) => {
   const authHeader = request.headers.get("authorization");
   const token = authHeader?.split(" ")[1];
-  if (!token) throw new Error("Silakan login terlebih dahulu");
   
-  const decoded: any = jwt.verify(token, process.env.JWT_SECRET || "rahasia_banget_123");
-  return decoded.userId;
+  const payload = JSON.parse(atob(token!.split('.')[1]));
+  return payload.userId;
 };
 
-// --- GET: Ambil semua task ---
+// --- GET: 
 export async function GET(request: Request) {
   try {
-    const userId = getUserIdFromToken(request);
+    const userId = getUserId(request);
     const tasks = await getTasks(userId);
     return NextResponse.json(tasks, { status: 200 });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 401 });
+    return NextResponse.json(
+      { error: "Gagal mengambil data task" }, 
+      { status: 500 }
+    );
   }
 }
 
-// --- POST: Buat task baru ---
+// --- POST
 export async function POST(request: Request) {
   try {
-    const userId = getUserIdFromToken(request);
+    const userId = getUserId(request);
     const body = await request.json();
     const task = await createTask(body, userId);
-    return NextResponse.json({ message: "Task berhasil dibuat!", task }, { status: 201 });
+    
+    return NextResponse.json(
+      { message: "Task berhasil dibuat!", task }, 
+      { status: 201 }
+    );
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 401 });
+    return NextResponse.json(
+      { error: error.message || "Gagal membuat task" }, 
+      { status: 400 }
+    );
   }
 }

@@ -1,42 +1,56 @@
 import { NextResponse } from "next/server";
 import { updateTask, deleteTask } from "@/controllers/taskController";
-import jwt from "jsonwebtoken";
 
 const getUserId = (req: Request) => {
-  const token = req.headers.get("authorization")?.split(" ")[1];
-  if (!token) throw new Error("Token missing");
-  const decoded: any = jwt.verify(token, process.env.JWT_SECRET || "rahasia_banget_123");
-  return decoded.userId;
+  const authHeader = req.headers.get("authorization");
+  const token = authHeader?.split(" ")[1];
+  
+  // Ambil payload dari token
+  const payload = JSON.parse(atob(token!.split('.')[1]));
+  return payload.userId;
 };
 
-// PATCH: Update Task
+// Update Task
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const userId = getUserId(req);
     const body = await req.json();
-    
-    // NAH, DI SINI PERUBAHANNYA: kita await params-nya
     const { id } = await params; 
+    const taskId = Number(id);
+    const task = await updateTask(taskId, userId, body);
     
-    const task = await updateTask(Number(id), userId, body);
     return NextResponse.json({ message: "Task diupdate!", task });
   } catch (error: any) {
-    console.error(error);
-    return NextResponse.json({ error: "Gagal update task" }, { status: 400 });
+    console.error("DEBUG PATCH ERROR:", error); 
+    return NextResponse.json(
+      { 
+        error: "Gagal update task", 
+        detail: error.message 
+      }, 
+      { status: 400 }
+    );
   }
 }
 
-// DELETE: Hapus Task
+// DELETE
 export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const userId = getUserId(req);
-    
-    // SAMA JUGA DI SINI: kita await params-nya
     const { id } = await params;
 
-    await deleteTask(Number(id), userId);
+    const taskId = Number(id);
+    await deleteTask(taskId, userId);
+    
     return NextResponse.json({ message: "Task berhasil dihapus" });
   } catch (error: any) {
-    return NextResponse.json({ error: "Gagal hapus task" }, { status: 400 });
+    console.error("DEBUG DELETE ERROR:", error);
+    
+    return NextResponse.json(
+      { 
+        error: "Gagal hapus task", 
+        detail: error.message 
+      }, 
+      { status: 400 }
+    );
   }
 }
