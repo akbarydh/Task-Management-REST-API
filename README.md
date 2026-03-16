@@ -1,15 +1,15 @@
-# 🚀 Fullstack Task Management API
+#  Fullstack Task Management API
 
 Aplikasi manajemen tugas (To-Do List) modern yang dibangun dengan sistem keamanan **JWT Authentication** dan database **PostgreSQL**. Project ini mencakup pengembangan Fullstack mulai dari RESTful API hingga User Interface yang responsif.
 
-## 🌟 Fitur Utama
+##  Fitur Utama
 - **Authentication & Authorization**: Register dan Login menggunakan JWT (JSON Web Token).
 - **Secure Middleware**: Proteksi route backend sehingga data hanya bisa diakses oleh pemiliknya.
 - **Full CRUD Operations**: Create, Read, Update status, dan Delete tugas secara real-time.
 - **Relational Database**: Setiap tugas terkoneksi secara spesifik ke `userId` masing-masing.
 - **Modern UI**: Dashboard bersih menggunakan Next.js dan Tailwind CSS.
 
-## 🛠️ Tech Stack
+##  Tech Stack
 **Backend:**
 - Node.js & Next.js (App Router)
 - Prisma ORM
@@ -21,37 +21,3 @@ Aplikasi manajemen tugas (To-Do List) modern yang dibangun dengan sistem keamana
 - Tailwind CSS
 - Lucide React (Icons)
 
-## 📸 Tampilan Aplikasi
-| Login Page | Dashboard |
-|---|---|
-| ![Login](https://via.placeholder.com/400x250?text=Login+Page+Preview) | ![Dashboard](https://via.placeholder.com/400x250?text=Dashboard+Preview) |
-
-## 🚀 Cara Menjalankan Project
-
-### 1. Clone Repository
-\`\`\`bash
-git clone https://github.com/username-kamu/nama-repo.git
-cd nama-repo
-\`\`\`
-
-### 2. Install Dependencies
-\`\`\`bash
-npm install
-\`\`\`
-
-### 3. Setup Environment Variable
-Buat file bernama `.env` di folder utama, lalu isi:
-\`\`\`env
-DATABASE_URL="postgresql://postgres:passwordmu@localhost:5432/nama_db?schema=public"
-JWT_SECRET="isi_asal_aja_bebas"
-\`\`\`
-
-### 4. Database Migration
-\`\`\`bash
-npx prisma migrate dev --name init
-\`\`\`
-
-### 5. Jalankan Aplikasi
-\`\`\`bash
-npm run dev
-\`\`\`
